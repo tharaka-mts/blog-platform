@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AdminService } from '../../../core/services/admin.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { User } from '../../../shared/models/user.model';
 
 @Component({
@@ -86,7 +87,10 @@ export class UsersComponent implements OnInit {
   message = '';
   error   = '';
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private confirmService: ConfirmService
+  ) {}
 
   ngOnInit(): void {
     this.adminService.getUsers().subscribe({
@@ -110,11 +114,18 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(user: User): void {
-    if (!confirm(`Delete user "${user.username}"? This cannot be undone.`)) return;
-    this.adminService.deleteUser(user.id).subscribe({
-      next: () => { this.users = this.users.filter(u => u.id !== user.id); this.flash('User deleted.'); },
-      error: err => this.setError(err),
-    });
+    this.confirmService.show(
+      'Delete User',
+      `Delete user "${user.username}"? This cannot be undone.`,
+      'danger',
+      'Delete',
+      () => {
+        this.adminService.deleteUser(user.id).subscribe({
+          next: () => { this.users = this.users.filter(u => u.id !== user.id); this.flash('User deleted.'); },
+          error: err => this.setError(err),
+        });
+      }
+    );
   }
 
   private flash(msg: string): void {

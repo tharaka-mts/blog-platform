@@ -104,4 +104,26 @@ export const BlogRepository = {
     );
     return rows as BlogRow[];
   },
+
+  async findDeleted(): Promise<BlogRow[]> {
+    const query = `
+      SELECT b.*, u.username, COUNT(DISTINCT bl.id) AS like_count 
+      FROM blogs b 
+      JOIN users u ON b.user_id = u.id 
+      LEFT JOIN blog_likes bl ON bl.blog_id = b.id
+      WHERE b.is_deleted = 1 
+      GROUP BY b.id
+      ORDER BY b.updated_at DESC
+    `;
+    const [rows] = await pool.query(query);
+    return rows as BlogRow[];
+  },
+
+  async restore(id: number): Promise<void> {
+    await pool.query('UPDATE blogs SET is_deleted = 0 WHERE id = ?', [id]);
+  },
+
+  async hardDelete(id: number): Promise<void> {
+    await pool.query('DELETE FROM blogs WHERE id = ?', [id]);
+  }
 };

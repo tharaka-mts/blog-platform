@@ -47,4 +47,17 @@ export const UserRepository = {
   async softDelete(id: number): Promise<void> {
     await pool.query('UPDATE users SET is_deleted = 1, is_active = 0 WHERE id = ?', [id]);
   },
+
+  async findDeleted(): Promise<UserRow[]> {
+    const [rows] = await pool.query('SELECT * FROM users WHERE is_deleted = 1 ORDER BY updated_at DESC');
+    return rows as UserRow[];
+  },
+
+  async restore(id: number): Promise<void> {
+    await pool.query('UPDATE users SET is_deleted = 0, is_active = 1 WHERE id = ?', [id]);
+  },
+
+  async hardDelete(id: number): Promise<void> {
+    await pool.query('DELETE FROM users WHERE id = ?', [id]);
+  }
 };

@@ -26,4 +26,28 @@ export class AdminService {
   deleteUser(id: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.API}/users/${id}`);
   }
+
+  getDeletedUsers(): Observable<ApiResponse<User[]>> {
+    return this.http.get<ApiResponse<User[]>>(`${this.API}/bin/users`);
+  }
+
+  restoreUser(id: number): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.API}/bin/users/${id}/restore`, {});
+  }
+
+  hardDeleteUser(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.API}/bin/users/${id}/hard`);
+  }
+
+  getDeletedBlogs(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.API}/bin/blogs`);
+  }
+
+  restoreBlog(id: number): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.API}/bin/blogs/${id}/restore`, {});
+  }
+
+  hardDeleteBlog(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.API}/bin/blogs/${id}/hard`);
+  }
 }

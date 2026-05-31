@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { BlogService } from '../../../core/services/blog.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { Blog } from '../../../shared/models/blog.model';
 
 @Component({
@@ -51,7 +52,10 @@ export class MyPostsComponent implements OnInit {
   blogs:   Blog[] = [];
   loading = true;
 
-  constructor(private blogService: BlogService) {}
+  constructor(
+    private blogService: BlogService,
+    private confirmService: ConfirmService
+  ) {}
 
   ngOnInit(): void {
     this.blogService.getMyBlogs().subscribe({
@@ -61,9 +65,16 @@ export class MyPostsComponent implements OnInit {
   }
 
   deleteBlog(blog: Blog): void {
-    if (!confirm(`Delete "${blog.title}"?`)) return;
-    this.blogService.deleteBlog(blog.id).subscribe(() => {
-      this.blogs = this.blogs.filter(b => b.id !== blog.id);
-    });
+    this.confirmService.show(
+      'Delete Blog',
+      `Delete "${blog.title}"?`,
+      'danger',
+      'Delete',
+      () => {
+        this.blogService.deleteBlog(blog.id).subscribe(() => {
+          this.blogs = this.blogs.filter(b => b.id !== blog.id);
+        });
+      }
+    );
   }
 }

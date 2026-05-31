@@ -54,6 +54,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/users/users.component').then(m => m.UsersComponent),
       },
+      {
+        path: 'admin/bin',
+        canActivate: [roleGuard],
+        loadComponent: () =>
+          import('./features/admin/admin-bin/admin-bin.component').then(m => m.AdminBinComponent),
+      },
     ],
   },
   {

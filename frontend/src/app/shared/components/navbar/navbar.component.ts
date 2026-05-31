@@ -64,6 +64,10 @@ import { AuthService } from '../../../core/services/auth.service';
                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition">
                       Admin Dashboard
                     </a>
+                    <a routerLink="/admin/bin" (click)="closeDropdown()"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition">
+                      Recycle Bin
+                    </a>
                   }
                   <div class="border-t border-gray-100 mt-1 pt-1">
                     <button (click)="logout()"

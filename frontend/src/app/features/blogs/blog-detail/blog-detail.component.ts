@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { BlogService } from '../../../core/services/blog.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Blog } from '../../../shared/models/blog.model';
 import { CommentSectionComponent } from '../../comments/comment-section/comment-section.component';
@@ -94,6 +95,7 @@ export class BlogDetailComponent implements OnInit {
     private route:       ActivatedRoute,
     private router:      Router,
     private blogService: BlogService,
+    private confirmService: ConfirmService,
     public  auth:        AuthService,
   ) {}
 
@@ -116,9 +118,17 @@ export class BlogDetailComponent implements OnInit {
   }
 
   deleteBlog(): void {
-    if (!this.blog || !confirm('Delete this blog post?')) return;
-    this.blogService.deleteBlog(this.blog.id).subscribe({
-      next: () => this.router.navigate(['/']),
-    });
+    if (!this.blog) return;
+    this.confirmService.show(
+      'Delete Blog Post',
+      'Delete this blog post?',
+      'danger',
+      'Delete',
+      () => {
+        this.blogService.deleteBlog(this.blog!.id).subscribe({
+          next: () => this.router.navigate(['/']),
+        });
+      }
+    );
   }
 }

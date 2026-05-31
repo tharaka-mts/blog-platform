@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommentService } from '../../../core/services/comment.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Comment } from '../../../shared/models/comment.model';
 import { CommentItemComponent } from '../comment-item/comment-item.component';
@@ -73,6 +74,7 @@ export class CommentSectionComponent implements OnInit {
 
   constructor(
     private commentService: CommentService,
+    private confirmService: ConfirmService,
     public  auth:           AuthService,
   ) {}
 
@@ -106,9 +108,16 @@ export class CommentSectionComponent implements OnInit {
   }
 
   deleteComment(commentId: number): void {
-    if (!confirm('Delete this comment?')) return;
-    this.commentService.deleteComment(this.blogId, commentId).subscribe({
-      next: () => this.loadComments(),
-    });
+    this.confirmService.show(
+      'Delete Comment',
+      'Delete this comment?',
+      'danger',
+      'Delete',
+      () => {
+        this.commentService.deleteComment(this.blogId, commentId).subscribe({
+          next: () => this.loadComments(),
+        });
+      }
+    );
   }
 }
