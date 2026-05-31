@@ -36,6 +36,14 @@ export const UserRepository = {
     await pool.query('UPDATE users SET is_active = ? WHERE id = ?', [isActive ? 1 : 0, id]);
   },
 
+  async updateUsername(id: number, username: string): Promise<void> {
+    await pool.query('UPDATE users SET username = ? WHERE id = ?', [username, id]);
+  },
+
+  async updatePassword(id: number, passwordHash: string): Promise<void> {
+    await pool.query('UPDATE users SET password = ? WHERE id = ?', [passwordHash, id]);
+  },
+
   async softDelete(id: number): Promise<void> {
     await pool.query('UPDATE users SET is_deleted = 1, is_active = 0 WHERE id = ?', [id]);
   },

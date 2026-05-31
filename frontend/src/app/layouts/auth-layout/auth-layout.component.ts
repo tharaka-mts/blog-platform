@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   template: `
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div class="min-h-[calc(100vh-3.5rem)] bg-gray-100 flex items-center justify-center px-4 py-12">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold text-gray-900">Blog Platform</h1>

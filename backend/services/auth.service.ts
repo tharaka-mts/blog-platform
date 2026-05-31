@@ -29,6 +29,28 @@ export const AuthService = {
       const err: any = new Error('Invalid credentials.'); err.status = 401; throw err;
     }
     const token = generateToken({ id: user.id, email: user.email, role: user.role });
-    return { token, user: { id: user.id, email: user.email, role: user.role } };
+    return { token, user: { id: user.id, username: user.username, email: user.email, role: user.role } };
+  },
+
+  async updateProfile(userId: number, newUsername: string) {
+    await UserRepository.updateUsername(userId, newUsername);
+    const user = await UserRepository.findById(userId);
+    if (!user) throw new Error('User not found.');
+    const token = generateToken({ id: user.id, email: user.email, role: user.role });
+    return { token, user: { id: user.id, username: user.username, email: user.email, role: user.role } };
+  },
+
+  async updatePassword(userId: number, oldPass: string, newPass: string) {
+    const user = await UserRepository.findById(userId);
+    if (!user) {
+      const err: any = new Error('User not found.'); err.status = 404; throw err;
+    }
+    const match = await bcrypt.compare(oldPass, user.password);
+    if (!match) {
+      const err: any = new Error('Incorrect current password.'); err.status = 401; throw err;
+    }
+    const hashed = await bcrypt.hash(newPass, 10);
+    await UserRepository.updatePassword(userId, hashed);
   },
 };
+

@@ -11,5 +11,6 @@ export interface User {
 export interface AuthUser {
   id: number;
   email: string;
+  username?: string;
   role: 'ADMIN' | 'USER';
 }

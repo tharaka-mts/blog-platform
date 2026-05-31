@@ -31,6 +31,12 @@ export const routes: Routes = [
           import('./features/blogs/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
       },
       {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/auth/profile/profile.component').then(m => m.ProfileComponent),
+      },
+      {
         path: 'my-posts',
         canActivate: [authGuard],
         loadComponent: () =>

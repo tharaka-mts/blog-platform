@@ -38,6 +38,22 @@ export class AuthService {
     );
   }
 
+  updateProfile(data: { username: string }): Observable<ApiResponse<{ token: string; user: AuthUser }>> {
+    return this.http.put<ApiResponse<{ token: string; user: AuthUser }>>(`${this.API}/profile`, data).pipe(
+      tap(res => {
+        if (res.success && res.data) {
+          localStorage.setItem(this.TOKEN_KEY, res.data.token);
+          localStorage.setItem(this.USER_KEY, JSON.stringify(res.data.user));
+          this.currentUser.set(res.data.user);
+        }
+      })
+    );
+  }
+
+  updatePassword(data: { oldPassword: string; newPassword: string }): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.API}/password`, data);
+  }
+
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
